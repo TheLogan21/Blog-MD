@@ -5,7 +5,6 @@ import MainLayout from "../Layouts/MainLayout.astro";
 import TypeBlogpost from "../Components/TypeBlogpost.astro";
 
 const blogPost = await getCollection("blog");
-console.log(blogPost[0].id);
 ---
 
 <MainLayout title="Logan's Blog">
@@ -13,10 +12,15 @@ console.log(blogPost[0].id);
     <section class="bg-white dark:bg-gray-900">
         <div class="container px-6 py-10 mx-auto">
             <h1
-                class="text-3xl font-semibold text-gray-800 capitalize lg:text-4xl dark:text-white"
+                class="text-3xl font-semibold text-gray-800 capitalize lg:text-4xl dark:text-white mb-3.5"
             >
                 {siteDataInfo.title}
             </h1>
+            <div class="">
+                <a class="text-blue-200 font-bold p-2" href="pagintedBlog/1"
+                    >PAGINATE BLOG</a
+                >
+            </div>
 
             <div class="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
                 {blogPost.map((post) => <TypeBlogpost post={post} />)}

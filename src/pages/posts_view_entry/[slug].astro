@@ -3,9 +3,12 @@ import type { GetStaticPaths } from "astro";
 import BlogLayout from "../../Layouts/BlogLayout.astro";
 import { getCollection } from "astro:content";
 import { Image } from "astro:assets";
+import { getEntry } from "astro:content";
+import { Formatter } from "../../Utils/formatter";
 
 export const getStaticPaths = (async () => {
     const blogPostCollection = await getCollection("blog");
+    const authors = await getCollection("author");
 
     return blogPostCollection.map((post) => ({
         params: { slug: post.slug },
@@ -16,9 +19,29 @@ export const getStaticPaths = (async () => {
 const { post } = Astro.props;
 const frontmatter = post.data;
 const { Content, headings } = await post.render();
+const author = (await getEntry(frontmatter.author)).data;
 ---
 
 <BlogLayout title={frontmatter.title}>
+    <div class="mt-2 text-md text-gray-400 mb-0 flex flex-row p-2 items-center">
+        <Image
+            src={author.avatar}
+            class="rounded-full"
+            alt={author.name}
+            width={50}
+            height={50}
+        />
+        <div class="flex flex-col ml-5">
+            <a
+                href=`/pagintedBlog/${author.name.toLowerCase().replaceAll(' ', '-')}`
+                class="text-blue-400">{author.name}</a
+            >
+            <span class="text-xs text-gray-200"
+                >{Formatter.formateDate(frontmatter.date)}</span
+            >
+        </div>
+    </div>
+
     <!-- Imagen -->
 
     <Image

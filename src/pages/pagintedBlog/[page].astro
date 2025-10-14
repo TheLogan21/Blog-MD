@@ -1,0 +1,55 @@
+---
+import type { GetStaticPaths } from "astro";
+import TypeBlogpost from "../../Components/TypeBlogpost.astro";
+import MainLayout from "../../Layouts/MainLayout.astro";
+import { getCollection } from "astro:content";
+
+// Type GetStaticPaths de Astro
+export const getStaticPaths = (async ({ paginate }) => {
+  const posted = await getCollection(`blog`);
+
+  return paginate(posted, { pageSize: 2 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<MainLayout>
+  <div class="py-10 mx-auto">
+    <h1 class="text-3xl font-semibold capitalize lg:text-4xl text-white">
+      Logan's Blog paginado
+    </h1>
+  </div>
+  <div>
+    <a
+      class="border rounded-md p-2 bg-gray-950 border-gray-950 font-bold text-white"
+      href="/"
+      id="btn-back">Regresar</a
+    >
+  </div>
+  <section class="bg-gray-900" aria-label="Entradas de blog">
+    <div class="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
+      {page.data.map((post) => <TypeBlogpost post={post} />)}
+    </div>
+  </section>
+
+  <section aria-label="Controles" class="flex justify-between mt-10">
+    <!--   page .. ?? prev   -->
+    <a
+      class="bg-blue-950 p-3 rounded-md text-white font-bold hover:cursor-pointer"
+      href={page.url.prev}
+      class:list={{
+        disabled: !page.url.prev,
+      }}>Anteriores</a
+    >
+
+    <!--   page .. ?? next   -->
+    <a
+      class="bg-blue-950 p-3 rounded-md text-white font-bold hover:cursor-pointer"
+      href={page.url.next}
+      class:list={{
+        disabled: !page.url.next,
+      }}>Siguientes</a
+    >
+  </section>
+</MainLayout>
